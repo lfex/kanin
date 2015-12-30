@@ -7,7 +7,6 @@
 ## Table of Contents
 
 * [Introduction](#introduction-)
-* [Dependencies](#dependencies-)
 * [Installation](#installation-)
 * [Documentation](#documentation-)
 * [Supported RabbitMQ Modules](#supported-modules-)
@@ -26,25 +25,6 @@ The kanin library is a wrapper for various modules in the Erlang AMQP client
 library. kanin was created in order to not only provide a less verbose AMQP
 client library for LFE hackers, but one that was also more Lispy.
 
-
-## Dependencies [&#x219F;](#table-of-contents)
-
-As of version 0.3.0 of kanin, the latest version of lfetool is required
-(currently lfetool 1.5.0-dev). This is due to the fact that kanin has started
-using the ``lfe.config`` file to override rebar dependencies. kanin uses the
-latest development release of LFE in order to support including various
-RabbitMQ Erlang header files, and since other dependencies use the latest
-release of LFE (0.9.0), we needed to override rebar's behaviour (see the rebar
-bug [#170](https://github.com/rebar/rebar/issues/170)).
-
-To install the latest development version of lfetool:
-
-```bash
-$ curl -L -o ./lfetool https://raw.github.com/lfe/lfetool/dev-v1/lfetool
-$ bash ./lfetool install
-```
-
-
 ## Installation [&#x219F;](#table-of-contents)
 
 To pull in kanin as part of your project, just add it to your ``rebar.config``
@@ -53,23 +33,14 @@ deps:
 ```erlang
   {deps, [
     ...
-    {kanin, ".*",
-      {git, "git@github.com:billosys/kanin.git", "master"}}
-      ]}.
+    {kanin, {git, "git@github.com:lfex/kanin.git", {branch, "master"}}}
+  ]}.
 ```
 
 And then do:
 
 ```bash
-    $ make compile
-```
-
-This will take a little while, as it builds the Erlang RabbitMQ client library
-from source. If you have ``amqp_lib`` on your ``$ERL_LIBS`` path, then you can
-do this instead:
-
-```bash
-    $ make skip-rabbit
+    $ rebar3 compile
 ```
 
 ## Documentation [&#x219F;](#table-of-contents)
@@ -405,4 +376,3 @@ TBD
 ### Handling Returned Messages [&#x219F;](#table-of-contents)
 
 TBD
-
