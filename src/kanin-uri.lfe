@@ -2,8 +2,7 @@
   (export all))
 
 (include-lib "kanin/include/kanin-uri-macros.lfe")
-(include-lib "amqp_lib/include/amqp_client.hrl")
-;;(include-lib "kanin/include/amqp-client.lfe")
+(include-lib "amqp_client/include/amqp_client.hrl")
 
 ;; XXX These two functions should be pulled in via the macro instead of being
 ;; defined here. However, there seems to be an issue with the auth mechanism
