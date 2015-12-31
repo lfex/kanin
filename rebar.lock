@@ -1,0 +1,10 @@
+[{<<"amqp_client">>,{pkg,<<"amqp_client">>,<<"3.5.6">>},0},
+ {<<"kla">>,
+  {git,"git://github.com/lfex/kla",
+       {ref,"e9ed980aec9c18b67a8b5f9c22cfebc778282d04"}},
+  0},
+ {<<"lfe">>,
+  {git,"git://github.com/rvirding/lfe",
+       {ref,"d102f6412992a37e01666cd57bdb5ecd1828b171"}},
+  0},
+ {<<"rabbit_common">>,{pkg,<<"rabbit_common">>,<<"3.5.6">>},0}].
