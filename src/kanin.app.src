@@ -18,6 +18,6 @@
     rabbit_common
    ]},
   {maintainers, ["LFEx"]},
-  {licenses, [""]},
+  {licenses, ["Apache 2.0"]},
   {links, [{"Github", "https://github.com/lfex/kanin"}]}
 ]}.
