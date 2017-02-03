@@ -376,3 +376,14 @@ TBD
 ### Handling Returned Messages [&#x219F;](#table-of-contents)
 
 TBD
+
+
+## License [&#x219F;](#contents)
+
+Apache License, Version 2.0
+
+Copyright © 2014-2017, BilloSystems, Ltd. Co.
+
+Copyright © 2015-2017, Ricardo Lanziano
+
+Copyright © 2015-2017, Duncan McGreggor
