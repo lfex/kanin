@@ -1,8 +1,15 @@
 # kanin
 
-<a href="http://aquarius-galuxy.deviantart.com/art/Rabbit-Drawing-176749973"><img src="resources/images/kanin-small.png" /></a>
+[![Build Status][travis badge]][travis]
+[![LFE Versions][lfe badge]][lfe]
+[![Erlang Versions][erlang badge]][versions]
+[![Tags][github tags badge]][github tags]
+[![Downloads][hex downloads]][hex package]
+
+[![][project-logo]][project-logo-source]
 
 *An LFE Wrapper for the Erlang RabbitMQ (AMQP) Client*
+
 
 ## Table of Contents
 
@@ -27,6 +34,7 @@ The kanin library is a wrapper for various modules in the Erlang AMQP client
 library. kanin was created in order to not only provide a less verbose AMQP
 client library for LFE hackers, but one that was also more Lispy.
 
+
 ## Installation [&#x219F;](#table-of-contents)
 
 To pull in kanin as part of your project, just add it to your ``rebar.config``
@@ -44,6 +52,7 @@ And then do:
 ```bash
     $ rebar3 compile
 ```
+
 
 ## Documentation [&#x219F;](#table-of-contents)
 
@@ -175,6 +184,7 @@ is equivalent to this:
   nowait 'false
   arguments '())
 ```
+
 
 ### Including Header Files [&#x219F;](#table-of-contents)
 
@@ -389,3 +399,25 @@ Copyright © 2014-2017, BilloSystems, Ltd. Co.
 Copyright © 2015-2017, Ricardo Lanziano
 
 Copyright © 2015-2017, Duncan McGreggor
+
+
+<!-- Named page links below: /-->
+
+[project-logo]: resources/images/kanin-small.png
+[project-logo-large]: resources/images/kanin.png
+[project-logo-source]: http://aquarius-galuxy.deviantart.com/art/Rabbit-Drawing-176749973
+[org]: https://github.com/lfex
+[github]: https://github.com/lfex/kanin
+[gitlab]: https://gitlab.com/lfex/kanin
+[travis]: https://travis-ci.org/lfex/kanin
+[travis badge]: https://img.shields.io/travis/lfex/kanin.svg
+[lfe]: https://github.com/rvirding/lfe
+[lfe badge]: https://img.shields.io/badge/lfe-1.2+-blue.svg
+[erlang badge]: https://img.shields.io/badge/erlang-17+-blue.svg
+[versions]: https://github.com/lfex/kanin/blob/master/.travis.yml
+[github tags]: https://github.com/lfex/kanin/tags
+[github tags badge]: https://img.shields.io/github/tag/lfex/kanin.svg
+[github downloads]: https://img.shields.io/github/downloads/atom/atom/total.svg
+[hex badge]: https://img.shields.io/hexpm/v/kanin.svg
+[hex package]: https://hex.pm/packages/kanin
+[hex downloads]: https://img.shields.io/hexpm/dt/kanin.svg
