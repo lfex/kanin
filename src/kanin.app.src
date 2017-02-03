@@ -1,23 +1,30 @@
-{application, 'kanin',
+{application, kanin,
  [{description, "An LFE Wrapper for the Erlang RabbitMQ (AMQP) Client"},
   {vsn, "0.4.0"},
   {modules,
-   ['kanin',
+   [kanin,
     'kanin-chan',
     'kanin-conn',
     'kanin-uri',
     'kanin-util']},
-
   {registered, []},
-  {included_applications, []},
-  {env, []},
   {applications,
    [kernel,
     stdlib,
     amqp_client,
     rabbit_common
    ]},
-  {maintainers, ["LFEx"]},
-  {licenses, ["Apache 2.0"]},
-  {links, [{"Github", "https://github.com/lfex/kanin"}]}
+
+  {included_applications, []},
+  {env, []},
+
+  %% Package metadata:
+  {pkg_name, kanin},
+  {maintainers, ["Duncan McGreggor"]},
+  {licenses, ["Apache-2"]},
+  {links,
+   [{"GitHub", "https://github.com/lfex/kanin"},
+    {"Gitlab", "https://gitlab.com/lfex/kanin"},
+    {"Hex", "https://hex.pm/packages/kanin"}
+   ]}
 ]}.
