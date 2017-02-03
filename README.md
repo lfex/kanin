@@ -380,7 +380,7 @@ TBD
 TBD
 
 
-## License [&#x219F;](#contents)
+## License [&#x219F;](#table-of-contents)
 
 Apache License, Version 2.0
 
