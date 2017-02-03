@@ -1,17 +1,19 @@
 language: erlang
 before_install:
   - sudo apt-get install xsltproc
+install: true
 before_script:
-  - "make get-lfetool"
-  - "make copy-appsrc"
+  - wget https://s3.amazonaws.com/rebar3/rebar3
+  - chmod +x rebar3
 script:
-  - "make check-travis"
+  - ./rebar3 eunit
 notifications:
   irc: "irc.freenode.org#billo"
   recipients:
     - eng@billo.systems
 otp_release:
-  - 17.3
-  - 17.1
+  - 19.2
+  - 18.3
+  - 17.5
   - R16B03
   - R15B03
