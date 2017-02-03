@@ -18,6 +18,8 @@
   * [Including Header Files](#including-header-files-)
   * [Connecting to a Broker](#connecting-to-a-broker-)
   * [Connecting To A Broker with AMQP URIs](#connecting-to-a-broker-with-amqp-uris-)
+* [License](#license-)
+
 
 ## Introduction [&#x219F;](#table-of-contents)
 
