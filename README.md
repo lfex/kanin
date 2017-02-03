@@ -18,6 +18,8 @@
   * [Including Header Files](#including-header-files-)
   * [Connecting to a Broker](#connecting-to-a-broker-)
   * [Connecting To A Broker with AMQP URIs](#connecting-to-a-broker-with-amqp-uris-)
+* [License](#license-)
+
 
 ## Introduction [&#x219F;](#table-of-contents)
 
@@ -376,3 +378,14 @@ TBD
 ### Handling Returned Messages [&#x219F;](#table-of-contents)
 
 TBD
+
+
+## License [&#x219F;](#table-of-contents)
+
+Apache License, Version 2.0
+
+Copyright © 2014-2017, BilloSystems, Ltd. Co.
+
+Copyright © 2015-2017, Ricardo Lanziano
+
+Copyright © 2015-2017, Duncan McGreggor
