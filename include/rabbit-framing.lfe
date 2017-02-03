@@ -35,14 +35,14 @@
   (version_major 0)
   (version_minor 9)
   server_properties
-  (mechanisms (binary "PLAIN"))
-  (locales (binary "en_US")))
+  (mechanisms #"PLAIN")
+  (locales #"en_US"))
 
 (defrecord connection.start_ok
   client_properties
-  (mechanism (binary "PLAIN"))
+  (mechanism #"PLAIN")
   response
-  (locale (binary "en_US")))
+  (locale #"en_US"))
 
 (defrecord connection.secure
   challenge)
@@ -61,16 +61,16 @@
   (heartbeat 0))
 
 (defrecord connection.open
-  (virtual_host (binary "/"))
-  (capabilities (binary))
+  (virtual_host #"/")
+  (capabilities #"")
   (insist 'false))
 
 (defrecord connection.open_ok
-  (known_hosts (binary)))
+  (known_hosts #""))
 
 (defrecord connection.close
   reply_code
-  (reply_text (binary))
+  (reply_text #"")
   class_id
   method_id)
 
@@ -78,20 +78,20 @@
   data)
 
 (defrecord connection.blocked
-  (reason (binary)))
+  (reason #""))
 
 (defrecord connection.unblocked
   data)
 
 (defrecord connection.redirect
   host
-  (known_hosts (binary)))
+  (known_hosts #""))
 
 (defrecord channel.open
-  (out_of_band (binary)))
+  (out_of_band #""))
 
 (defrecord channel.open_ok
-  (channel_id (binary)))
+  (channel_id #""))
 
 (defrecord channel.flow
   active)
@@ -110,11 +110,11 @@
 
 (defrecord channel.alert
   reply_code
-  (reply_text (binary))
+  (reply_text #"")
   (details '()))
 
 (defrecord access.request
-  (realm (binary "/data"))
+  (realm  #"/data")
   (exclusive 'false)
   (passive 'true)
   (active 'true)
@@ -127,7 +127,7 @@
 (defrecord exchange.declare
   (ticket 0)
   exchange
-  (type (binary "direct"))
+  (type #"direct")
   (passive 'false)
   (durable 'false)
   (auto_delete 'false)
@@ -151,7 +151,7 @@
   (ticket 0)
   destination
   source
-  (routing_key (binary))
+  (routing_key #"")
   (nowait 'false)
   (arguments '()))
 
@@ -162,7 +162,7 @@
   (ticket 0)
   destination
   source
-  (routing_key (binary))
+  (routing_key #"")
   (nowait 'false)
   (arguments '()))
 
@@ -171,7 +171,7 @@
 
 (defrecord queue.declare
   (ticket 0)
-  (queue (binary))
+  (queue #"")
   (passive 'false)
   (durable 'false)
   (exclusive 'false)
@@ -186,9 +186,9 @@
 
 (defrecord queue.bind
   (ticket 0)
-  (queue (binary))
+  (queue #"")
   exchange
-  (routing_key (binary))
+  (routing_key #"")
   (nowait 'false)
   (arguments '()))
 
@@ -197,7 +197,7 @@
 
 (defrecord queue.purge
   (ticket 0)
-  (queue (binary))
+  (queue #"")
   (nowait 'false))
 
 (defrecord queue.purge_ok
@@ -205,7 +205,7 @@
 
 (defrecord queue.delete
   (ticket 0)
-  (queue (binary))
+  (queue #"")
   (if_unused 'false)
   (if_empty 'false)
   (nowait 'false))
@@ -215,9 +215,9 @@
 
 (defrecord queue.unbind
   (ticket 0)
-  (queue (binary))
+  (queue #"")
   exchange
-  (routing_key (binary))
+  (routing_key #"")
   (arguments '()))
 
 (defrecord queue.unbind_ok
@@ -233,8 +233,8 @@
 
 (defrecord basic.consume
   (ticket 0)
-  (queue (binary))
-  (consumer_tag (binary))
+  (queue #"")
+  (consumer_tag #"")
   (no_local 'false)
   (no_ack 'false)
   (exclusive 'false)
@@ -253,14 +253,14 @@
 
 (defrecord basic.publish
   (ticket 0)
-  (exchange (binary))
-  (routing_key (binary))
+  (exchange #"")
+  (routing_key #"")
   (mandatory 'false)
   (immediate 'false))
 
 (defrecord basic.return
   reply_code
-  (reply_text (binary))
+  (reply_text #"")
   exchange
   routing_key)
 
@@ -273,7 +273,7 @@
 
 (defrecord basic.get
   (ticket 0)
-  (queue (binary))
+  (queue #"")
   (no_ack 'false))
 
 (defrecord basic.get_ok
@@ -284,7 +284,7 @@
   message_count)
 
 (defrecord basic.get_empty
-  (cluster_id (binary)))
+  (cluster_id #""))
 
 (defrecord basic.ack
   (delivery_tag 0)
@@ -309,7 +309,7 @@
   (requeue 'true))
 
 (defrecord basic.credit
-  (consumer_tag (binary))
+  (consumer_tag #"")
   credit
   drain)
 
@@ -317,7 +317,7 @@
   available)
 
 (defrecord basic.credit_drained
-  (consumer_tag (binary))
+  (consumer_tag #"")
   credit_drained)
 
 (defrecord tx.select
@@ -354,8 +354,8 @@
 
 (defrecord file.consume
   (ticket 1)
-  (queue (binary))
-  (consumer_tag (binary))
+  (queue #"")
+  (consumer_tag #"")
   (no_local 'false)
   (no_ack 'false)
   (exclusive 'false)
@@ -383,15 +383,15 @@
 
 (defrecord file.publish
   (ticket 1)
-  (exchange (binary))
-  (routing_key (binary))
+  (exchange #"")
+  (routing_key #"")
   (mandatory 'false)
   (immediate 'false)
   identifier)
 
 (defrecord file.return
   (reply_code 200)
-  (reply_text (binary))
+  (reply_text #"")
   exchange
   routing_key)
 
@@ -422,8 +422,8 @@
 
 (defrecord stream.consume
   (ticket 1)
-  (queue (binary))
-  (consumer_tag (binary))
+  (queue #"")
+  (consumer_tag #"")
   (no_local 'false)
   (exclusive 'false)
   (nowait 'false))
@@ -440,14 +440,14 @@
 
 (defrecord stream.publish
   (ticket 1)
-  (exchange (binary))
-  (routing_key (binary))
+  (exchange #"")
+  (routing_key #"")
   (mandatory 'false)
   (immediate 'false))
 
 (defrecord stream.return
   (reply_code 200)
-  (reply_text (binary))
+  (reply_text #"")
   exchange
   routing_key)
 

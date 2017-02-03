@@ -13,9 +13,9 @@
   (payload (binary)))
 
 (defrecord amqp_params_network
-  (username (binary "guest"))
-  (password (binary "guest"))
-  (virtual_host (binary "/"))
+  (username #"guest")
+  (password #"guest")
+  (virtual_host #"/")
   (host "localhost")
   (port 'undefined)
   (channel_max 0)
@@ -32,7 +32,7 @@
 (defrecord amqp_params_direct
   (username 'none)
   (password 'none)
-  (virtual_host (binary "/"))
+  (virtual_host #"/")
   (node (node))
   (adapter_info 'none)
   (client_properties '()))
