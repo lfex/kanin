@@ -19,4 +19,4 @@
          (exports (proplists:get_value
                     'exports
                        (element 2 (element 2 chunks)))))
-    (is-equal 35 (length exports))))
+    (is-equal 36 (length exports))))
