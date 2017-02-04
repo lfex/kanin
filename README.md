@@ -556,7 +556,75 @@ operation is described in the "Handling Returned Messages" section below.
 
 ### Receiving Messages [&#x219F;](#table-of-contents)
 
-TBD
+The simplest way to receive a message is to poll an existing queue. This is
+achieved using the `basic.get` command:
+
+```cl
+lfe> (set get-cmd (make-basic.get queue #"my-queue" no_ack 'true))
+#(basic.get 0 #"my-queue" true)
+lfe> (set `#(,(= (match-basic.get_ok) ok) ,content) (kanin-chan:call chan get-cmd))
+#(#(basic.get_ok ...)
+  #(amqp_msg
+    #(P_basic ...)
+    #"foobar"))
+lfe> ok
+#(basic.get_ok ...)
+lfe> content
+#(amqp_msg
+  #(P_basic ...)
+  #"foobar")
+```
+
+The payload that is returned is an Erlang binary, and it is up to the
+application to decode it, as the structure of this content is opaque to the
+AMQP protocol.
+
+If the queue were empty when the `basic.get` command was invoked, then the
+channel will return an `basic.get_empty` message, as illustrated here:
+
+```cl
+lfe> (set (= (match-basic.get_empty) content)
+          (kanin-chan:call chan get-cmd))
+#(basic.get_empty #"")
+lfe> content
+#(basic.get_empty #"")
+```
+
+Note that the previous example sets the `no_ack` flag on the `basic.get`
+command. This tells the broker that the receiver will not send an
+acknowledgement of the message. In doing so, the broker can absolve itself of
+the responsibility for delivery - once it believes it has delivered a message,
+then it is free to assume that consuming application has taken responsibility
+for it. In general, a lot of applications will not want these semantics,
+rather, they will want to explicitly acknowledge the receipt of a message.
+This is done with the `basic.ack` command, where the `no_ack` field is turned
+off by default:
+
+```cl
+lfe> (set get-cmd (make-basic.get queue #"my-queue"))
+#(basic.get 0 #"my-queue" false)
+lfe> (set `#(,(match-basic.get_ok delivery_tag msg-tag) ,content)
+          (kanin-chan:call chan get-cmd))
+#(...)
+lfe> msg-tag
+7
+```
+
+After the application has done what it needs to do with the response, it can
+acknowledge the message:
+
+```cl
+lfe> (kanin-chan:cast chan (make-basic.ack delivery_tag msg-tag))
+ok
+```
+
+Notice that we sent the `basic.ack` command using `kanin-chan:cast/2`
+instead of `kanin-chan:call/2`. This is because the broker will not send a
+response to an acknowledgement, i.e. it is a fire and forget command.
+
+Receiving messages by polling a queue is not as as efficient as subscribing a
+consumer to a queue, so consideration should be taken when receiving large
+volumes of messages.
 
 
 ### Subscribing to Queues [&#x219F;](#table-of-contents)
