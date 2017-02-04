@@ -381,12 +381,96 @@ demonstrated above).
 
 ### Creating Channels [&#x219F;](#table-of-contents)
 
-TBD
+Once a connection to the broker has been established, the `kanin-conn` module
+can be used to create channels:
+
+```cl
+lfe> (set `#(ok ,chan) (kanin-conn:open-channel conn))
+#(ok <0.114.0>)
+```
+
+This function takes the pid of the connection process and returns
+`#(ok, chan)`, where `chan` is a pid that encapsulates a server side channel.
 
 
 ### Managing Exchanges and Queues [&#x219F;](#table-of-contents)
 
-TBD
+Once a channel has been established, the `kanin-chan` module can be used to
+manage the fundamental objects within AMQP, namely exchanges and queues. The
+following function creates an exchange called `my-exchange`, which by default,
+is the direct exchange:
+
+```cl
+lfe> (set declare (make-exchange.declare exchange #"my-exchange"))
+#(exchange.declare 0 #"my-exchange" #"direct" false false false false false ())
+lfe> (kanin-chan:call chan declare)
+#(exchange.declare_ok)
+```
+
+Similarly, a queue called `my-queue` is created by this code:
+
+```cl
+lfe> (set declare (make-queue.declare queue #"my-queue"))
+#(queue.declare 0 #"my-queue" false false false false false ())
+lfe> (kanin-chan:call chan declare)
+#(queue.declare_ok #"my-queue" 0 0)
+```
+
+In many scenarios, a client is not interested in the actual name of the queue
+it wishes to receive messages from. In this case, it is possible to let the
+broker generate a random name for a queue. To do this, send a
+`queue.declare` command and leave the queue attribute undefined:
+
+```cl
+lfe> (kanin-chan:call chan (make-queue.declare))
+#(queue.declare_ok #"amq.gen-nQEU2b7bjcGEi39TsYxXcg" 0 0)
+```
+
+The server will auto-generate a queue name and return this name as part of the
+acknowledgement.
+
+To create a routing rule from an exchange to a queue, the `queue.bind`
+command is used:
+
+
+```cl
+lfe> (set binding (make-queue.bind queue #"my-queue"
+                                   exchange #"my-exchange"
+                                   routing_key #"my-key"))
+#(queue.bind 0 #"my-queue" #"my-exchange" #"my-key" false ())
+lfe> (kanin-chan:call chan binding)
+#(queue.bind_ok)
+```
+
+When this routing rule is no longer required, this route can be deleted using
+the `queue.unbind` command:
+
+```cl
+lfe> (set binding (make-queue.unbind queue #"my-queue"
+                                     exchange #"my-exchange"
+                                     routing_key #"my-key"))
+#(queue.unbind 0 #"my-queue" #"my-exchange" #"my-key" ())
+lfe> (kanin-chan:call chan binding)
+#(queue.unbind_ok)
+```
+
+An exchange can be deleted by the `exchange.delete` command:
+
+```cl
+lfe> (set delete (make-exchange.delete exchange #"my-exchange"))
+#(exchange.delete 0 #"my-exchange" false false)
+lfe> (kanin-chan:call chan delete)
+#(exchange.delete_ok)
+```
+
+Similarly, a queue is deleted using the `queue.delete` command:
+
+```cl
+lfe> (set delete (make-queue.delete queue #"my-queue"))
+#(queue.delete 0 #"my-queue" false false false)
+lfe> (kanin-chan:call chan delete)
+#(queue.delete_ok 0)
+```
 
 
 ### Sending Messages [&#x219F;](#table-of-contents)

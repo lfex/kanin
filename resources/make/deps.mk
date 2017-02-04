@@ -10,4 +10,6 @@ amqp-client:
 	git checkout $(RAB_VER) && \
 	$(SILENT_MAKE) && \
 	mkdir -p $(RABCOM_DIR)/ebin && \
-	mv $(AMQP_DIR)/deps/rabbit_common/ebin/* $(RABCOM_DIR)/ebin
+	mkdir -p $(RABCOM_DIR)/include && \
+	cp $(AMQP_DIR)/deps/rabbit_common/ebin/* $(RABCOM_DIR)/ebin && \
+	cp $(AMQP_DIR)/deps/rabbit_common/include/* $(RABCOM_DIR)/include
