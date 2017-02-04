@@ -38,10 +38,9 @@
   * [Closing Channels and the Connection](#closing-channels-and-the-connection-)
   * **Examples**
   * [Complete Example](#complete-example-)
-  * [Client Deployment](#client-deployment-)
   * **Flow Control**
-  * [Egress Flow Control](#egress-flow-control-)
-  * [Ingress Flow Control](#ingress-flow-control-)
+  * [Delivery Flow Control](#delivery-flow-control-)
+  * [Blocked Connections](#blocked-connections-)
   * [Handling Returned Messages](#handling-returned-messages-)
 * [License](#license-)
 
@@ -519,7 +518,26 @@ TBD
 
 ### Subscribing Internals [&#x219F;](#table-of-contents)
 
-TBD
+The channel uses a module implementing the `amqp_gen_consumer` behaviour to
+determine its behaviour with regard to subscribing related events.
+Effectively, this modules handles client-side consumer registration and
+routing of deliveries to the appropriate consumers.
+
+For instance, the default consumer module, `amqp_selective_consumer`, keeps
+track of which processes are subscribed to which queues and routes deliveries
+appropriately; in addition, if the channel gives it a delivery for an unknown
+consumer, it will pass it to a default consumer, should one be registered.
+
+By contrast, `amqp_direct_consumer` simply forwards all the messages it
+receives from the channel to its only registered consumer.
+
+The consumer module for a channel is chosen when the channel is opened by
+setting the second parameter to `kanin-conn:open-channel/2`. The consumer
+module implements the `amqp_gen_consumer` behaviour and thus implements
+functions to handle receiving `basic.consume`, `basic.consume_ok`,
+`basic.cancel`, `basic.cancel_ok` methods as well as publishes.
+
+See the API documentation for details.
 
 
 ### Closing Channels and the Connection [&#x219F;](#table-of-contents)
@@ -532,17 +550,12 @@ TBD
 TBD
 
 
-### Client Deployment [&#x219F;](#table-of-contents)
+### Delivery Flow Control [&#x219F;](#table-of-contents)
 
 TBD
 
 
-### Egress Flow Control [&#x219F;](#table-of-contents)
-
-TBD
-
-
-### Ingress Flow Control [&#x219F;](#table-of-contents)
+### Blocked Connections [&#x219F;](#table-of-contents)
 
 TBD
 
