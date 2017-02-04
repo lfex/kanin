@@ -2,7 +2,7 @@
   (export all))
 
 (include-lib "kanin/include/kanin-uri-macros.lfe")
-(include-lib "amqp_client/include/amqp_client.hrl")
+(include-lib "kanin/include/amqp-client.lfe")
 
 ;; XXX These two functions should be pulled in via the macro instead of being
 ;; defined here. However, there seems to be an issue with the auth mechanism
@@ -11,16 +11,20 @@
 ;; nor Erlang). For more info, see issue #4:
 ;;    https://github.com/billosys/kanin/issues/4
 (defun parse (uri)
-  (parse uri #b("/")))
+  (parse uri #"/"))
 
 (defun parse (uri vhost)
   (parse
     uri
     vhost
-    (list #'amqp_auth_mechanisms:plain/3
-          #'amqp_auth_mechanisms:amqplain/3)))
+    `(,#'amqp_auth_mechanisms:plain/3
+      ,#'amqp_auth_mechanisms:amqplain/3)))
 
 (defun parse (uri vhost auth-mechs)
-  (let* ((`#(,status ,raw-opts) (amqp_uri:parse uri vhost))
-         (opts (set-amqp_params_network-auth_mechanisms raw-opts auth-mechs)))
-    `#(,status ,opts)))
+  (case (amqp_uri:parse uri vhost)
+    ((= `#(ok #(amqp_params_direct ,_ ,_ ,_ ,_ ,_)) result)
+      result)
+    ((= `#(ok #(amqp_params_network ,_ ,_ ,_ ,_ ,_)) result)
+      `#(ok ,(set-amqp_params_network-auth_mechanisms
+                              result auth-mechs)))
+    (err err)))
