@@ -1,6 +1,6 @@
 {application, kanin,
  [{description, "An LFE Wrapper for the Erlang RabbitMQ (AMQP) Client"},
-  {vsn, "0.5.1"},
+  {vsn, "0.6.0"},
   {modules,
    [kanin,
     'kanin-chan',
