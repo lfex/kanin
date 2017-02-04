@@ -8,7 +8,7 @@ before_script:
 env:
   - PATH=".:$PATH"
 script:
-  - ./rebar3 compile
+  - ./rebar3 as dev compile
   - ./rebar3 as test eunit
 notifications:
   irc: "irc.freenode.org#billo"
