@@ -26,7 +26,7 @@
          (exports (proplists:get_value
                     'exports
                        (element 2 (element 2 chunks)))))
-    (is-equal 39 (length exports))))
+    (is-equal 42 (length exports))))
 
 (deftest parse-net
   (let ((`#(ok ,result) (kanin-uri:parse "amqp://alice:secret@host:10000/vhost")))
