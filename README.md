@@ -18,13 +18,30 @@
 * [Documentation](#documentation-)
 * [Supported RabbitMQ Modules](#supported-modules-)
 * [Usage](#usage-)
+  * **Notices**
   * [Copyright Notice](#copyright-notice-)
+  * **Getting Started**
   * [The LFE AMQP Client Library](#the-lfe-amqp-client-library-)
   * [Programming Model](#programming-model-)
   * [AMQP Commands](#amqp-commands-)
   * [Including Header Files](#including-header-files-)
+  * **API**
   * [Connecting to a Broker](#connecting-to-a-broker-)
   * [Connecting To A Broker with AMQP URIs](#connecting-to-a-broker-with-amqp-uris-)
+  * [Creating Channels](#creating-hannels-)
+  * [Managing Exchanges and Queues](#managing-exchanges-and-queues-)
+  * [Sending Messages](#sending-messages-)
+  * [Receiving Messages](#receiving-messages-)
+  * [Subscribing to Queues](#subscribing-to-queues-)
+  * [Subscribing Internals](#subscribing-internals-)
+  * [Closing Channels and the Connection](#closing-channels-and-the-connection-)
+  * **Examples**
+  * [Complete Example](#complete-example-)
+  * [Client Deployment](#client-deployment-)
+  * **Flow Control**
+  * [Egress Flow Control](#egress-flow-control-)
+  * [Ingress Flow Control](#ingress-flow-control-)
+  * [Handling Returned Messages](#handling-returned-messages-)
 * [License](#license-)
 
 
@@ -167,7 +184,7 @@ when using the `(make-exchange.declare ...)` record-creating macro,
 specifying the following:
 
 ```cl
-(make-exchange.declare exchange (list_to_binary "my_exchange"))
+(make-exchange.declare exchange #"my_exchange")
 ```
 
 is equivalent to this:
