@@ -2,6 +2,8 @@
   (behaviour ltest-unit))
 
 (include-lib "ltest/include/ltest-macros.lfe")
+(include-lib "kanin/include/kanin-uri-macros.lfe")
+(include-lib "kanin/include/amqp-client.lfe")
 
 (defun get-test-file ()
   "./_build/test/lib/kanin/ebin/kanin-uri.beam")
@@ -24,24 +26,21 @@
          (exports (proplists:get_value
                     'exports
                        (element 2 (element 2 chunks)))))
-    (is-equal 8 (length exports))))
+    (is-equal 39 (length exports))))
 
 (deftest parse-net
   (let ((`#(ok ,result) (kanin-uri:parse "amqp://alice:secret@host:10000/vhost")))
     (is-equal 'amqp_params_network (element 1 result))
-    (is-equal "alice" (binary_to_list (element 2 result)))
-    (is-equal "secret" (binary_to_list (element 3 result)))
-    (is-equal "vhost" (binary_to_list (element 4 result)))
-    (is-equal "host" (element 5 result))
-    (is-equal 10000 (element 6 result))))
+    (is-equal #"alice" (amqp_params_network-username result))
+    (is-equal #"secret" (amqp_params_network-password result))
+    (is-equal #"vhost" (amqp_params_network-virtual_host result))
+    (is-equal "host" (amqp_params_network-host result))
+    (is-equal 10000 (amqp_params_network-port result))))
 
-;; XXX The following test isn't passing anymore. It now failes due to a bad
-;; arg. The manner in which amqp_params_direct is used (has been updated?)
-;; needs to be looked into.
-(deftestskip parse-direct
+(deftest parse-direct
   (let ((`#(ok ,result) (kanin-uri:parse "amqp://dave:secret@")))
-    (is-equal 'amqp_params_direct (element 1 result))
-    (is-equal "dave" (binary_to_list (element 2 result)))
-    (is-equal "secret" (binary_to_list (element 3 result)))
-    (is-equal "/" (binary_to_list (element 4 result)))
-    (is-equal 'nonode@nohost (element 5 result))))
+    (is (is_record result 'amqp_params_direct))
+    (is-equal #"dave" (amqp_params_direct-username result))
+    (is-equal #"secret" (amqp_params_direct-password result))
+    (is-equal #"/" (amqp_params_direct-virtual_host result))
+    (is-equal 'nonode@nohost (amqp_params_direct-node result))))
