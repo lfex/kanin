@@ -25,9 +25,10 @@
   * [Programming Model](#programming-model-)
   * [AMQP Commands](#amqp-commands-)
   * [Including Header Files](#including-header-files-)
-  * **API**
+  * **Connecting**
   * [Connecting to a Broker](#connecting-to-a-broker-)
   * [Connecting To A Broker with AMQP URIs](#connecting-to-a-broker-with-amqp-uris-)
+  * **Channels, Exchanges, Queues, and Messages**
   * [Creating Channels](#creating-hannels-)
   * [Managing Exchanges and Queues](#managing-exchanges-and-queues-)
   * [Sending Messages](#sending-messages-)
@@ -488,6 +489,17 @@ lfe> (set delete (make-queue.delete queue #"my-queue"))
 lfe> (kanin-chan:call chan delete)
 #(queue.delete_ok 0)
 ```
+
+Note that we used `kanin-chan:call/2` in the examples above, since we sent
+AMQP synchronous methods. It is generally advisable to use `kanin-
+chan:call/{2,3}` for synchronous methods, rather than `kanin-chan:cast/{2,3}`,
+even though both functions work with both sync and async method types. The
+difference between the two functions is that `kanin-chan:call/{2,3}` blocks
+the calling process until the reply comes back from the server (for sync
+methods) or the method has been sent on the wire (for async methods), whereas
+`kanin-chan:cast/{2,3}` returns `ok` immediately. Thus, only by using `kanin-
+chan:call/{2,3}` do we have direct feedback when the broker has acknowledged
+our command.
 
 
 ### Sending Messages [&#x219F;](#table-of-contents)
