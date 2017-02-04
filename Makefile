@@ -5,5 +5,4 @@ LFE = _build/dev/lib/lfe/bin/lfe
 
 include resources/make/code.mk
 include resources/make/docs.mk
-
-
+include resources/make/deps.mk
