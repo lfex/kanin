@@ -228,7 +228,7 @@ options record. These may be generated either by creating the records directly
 or providing connection information in a URI and having those parsed to
 generate the record for you.
 
-Example record-creation:
+Example optoins from record-creation:
 
 ```cl
 lfe> (make-amqp_params_direct)
@@ -249,7 +249,7 @@ lfe> (make-amqp_params_network host "localhost")
   () ())
 ```
 
-Example option URI parsing:
+Example options from URI-parsing:
 
 ```cl
 lfe> (kanin-uri:parse "amqp://dave:secret@")
@@ -269,7 +269,6 @@ lfe> (kanin-uri:parse "amqp://alice:secret@host:10000/vhost")
     10000 0 0 10 infinity none
     (#Fun<amqp_uri.11.121287672> #Fun<amqp_uri.11.121287672>)
     () ()))
-
 ```
 
 (For more information in this, see the section below:
@@ -503,8 +502,57 @@ our command.
 
 ### Sending Messages [&#x219F;](#table-of-contents)
 
-TBD
+To send a message to an exchange with a particular routing key, the
+`basic.publish` command in conjunction with the #amqp_msg{} record is used:
 
+```cl
+lfe> (set msg (make-amqp_msg payload #"foobar"))
+#(amqp_msg
+  #(P_basic ...)
+  #"foobar")
+lfe> (set pub (make-basic.publish exchange #"my-exchange" routing_key #"my-key"))
+#(basic.publish 0 #"my-exchange" #"my-key" false false)
+lfe> (kanin-chan:cast chan pub msg)
+ok
+```
+
+By default, the properties field of the `amqp_msg` record contains a minimal
+implementation of the `P_basic` properties structure. If an application
+needs to override any of the defaults, for example, to send persistent
+messages, the `amqp_msg` needs to be constructed accordingly:
+
+```cl
+lfe> (set payload #"foobaz")
+#"foobaz"
+lfe> (set pub (make-basic.publish exchange #"my-exchange" routing_key #"my-key"))
+#(basic.publish 0 #"my-exchange" #"my-key" false false)
+```
+
+Set persistent delivery mode property:
+
+```cl
+lfe> (set basic-properties (make-P_basic delivery_mode 2))
+#(P_basic ... 2 ...)
+```
+
+Continue with message creation and send:
+
+```cl
+lfe> (set msg (make-amqp_msg props basic-properties payload #"foobar"))
+#(amqp_msg
+  #(P_basic ... 2 ...)
+  #"foobar")
+lfe> (kanin-chan:cast chan pub msg)
+ok
+```
+
+The full list of message headers is explained in the AMQP protocol
+documentation.
+
+Remember that the AMQP `basic.publish` command is asynchronous. This means
+that the server will not send a response to it, unless the message is not
+deliverable. In this case, the message will be returned to the client. This
+operation is described in the "Handling Returned Messages" section below.
 
 ### Receiving Messages [&#x219F;](#table-of-contents)
 
