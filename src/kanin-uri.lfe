@@ -22,9 +22,9 @@
 
 (defun parse (uri vhost auth-mechs)
   (case (amqp_uri:parse uri vhost)
-    ((= `#(ok #(amqp_params_direct ,_ ,_ ,_ ,_ ,_)) result)
+    ((= `#(ok #(match-amqp_params_direct)) result)
       result)
-    ((= `#(ok #(amqp_params_network ,_ ,_ ,_ ,_ ,_)) result)
+    ((= `#(ok #(match-amqp_params_network)) result)
       `#(ok ,(set-amqp_params_network-auth_mechanisms
                               result auth-mechs)))
     (err err)))
