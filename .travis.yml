@@ -1,4 +1,6 @@
 language: erlang
+services:
+  - rabbitmq
 before_install:
   - sudo apt-get install xsltproc
 install: true

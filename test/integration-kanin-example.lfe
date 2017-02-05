@@ -4,13 +4,7 @@
 (include-lib "ltest/include/ltest-macros.lfe")
 (include-lib "kanin/include/amqp-client.lfe")
 
-;; XXX This test works and runs with eunit, but due to an ltest runner issue
-;;     (see https://github.com/lfex/ltest/issues/57), this can't be run with
-;;     the test runner, and therefore, the integration test(s) can't be
-;;     isolated. That, in turn, means it can't be run on Travis and must be set
-;;     to skip (since RabbitMQ isn't set up on Travis, and I don't really want
-;;     to).
-(deftestskip example
+(deftest example
   (let* (;; Get connection options
          (`#(ok ,opts) (kanin-uri:parse "amqp://localhost"))
          ;; Start a network connection
