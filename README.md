@@ -554,6 +554,7 @@ that the server will not send a response to it, unless the message is not
 deliverable. In this case, the message will be returned to the client. This
 operation is described in the "Handling Returned Messages" section below.
 
+
 ### Receiving Messages [&#x219F;](#table-of-contents)
 
 The simplest way to receive a message is to poll an existing queue. This is
@@ -579,7 +580,7 @@ The payload that is returned is an Erlang binary, and it is up to the
 application to decode it, as the structure of this content is opaque to the
 AMQP protocol.
 
-If the queue were empty when the `basic.get` command was invoked, then the
+If the queue was empty when the `basic.get` command was invoked, then the
 channel will return an `basic.get_empty` message, as illustrated here:
 
 ```cl
@@ -629,7 +630,89 @@ volumes of messages.
 
 ### Subscribing to Queues [&#x219F;](#table-of-contents)
 
-TBD
+As indicated in the "Receiving Messages" section, subscribing to a queue can
+be a more efficient means of consuming messages than the polling mechanism. To
+subscribe to a queue, the `basic.consume` command is used in one of two
+forms:
+
+```cl
+lfe> (set sub (make-basic.consume queue #"my-queue"))
+#(basic.consume 0 #"my-queue" #"" false false false false ())
+lfe> (set (match-basic.consume_ok consumer_tag cnsm-tag)
+          (kanin-chan:subscribe chan sub consumer-pid))
+```
+
+or
+
+```cl
+(set sub (make-basic.consume queue #"my-queue"))
+#(basic.consume 0 #"my-queue" #"" false false false false ())
+lfe> (set (match-basic.consume_ok consumer_tag cnsm-tag)
+          (kanin-chan:call chan sub))
+#(basic.consume_ok #"amq.ctag-QDTEY6V7duBFu_k86wayzg")
+lfe> cnsm-tag
+#"amq.ctag-QDTEY6V7duBFu_k86wayzg"
+```
+
+The `consumer-pid` argument is the pid of a process to which the client
+library will deliver messages. This can be an arbitrary Erlang process,
+including the process that initiated the subscription. The `basic.consume_ok`
+notification contains a tag that identifies the subscription. This is used at
+a later point in time to cancel the subscription. This notification is sent
+both to the process that created the subscription (as the return value to
+`kanin-chan:subscribe/3`) and as a message to the consumer process.
+
+When a consumer process is subscribed to a queue, it will receive messages in
+its mailbox. An example receive loop looks like this:
+
+```cl
+(defun loop (chan)
+  (receive
+    ;; This is the first message received
+    ((match-basic.consume_ok)
+      (loop chan))
+    ;; This is received when the subscription is cancelled
+    ((match-basic.cancel_ok)
+      'ok)
+    ;; A delivery
+    (`#(,(match-basic.deliver delivery_tag tag) ,content)
+      ;; do somehting with the message payload here ...
+      (lfe_io:format "Payload: ~p~n" `(,content))
+      (kanin-chan:cast chan (make-basic.ack delivery_tag tag))
+      (loop chan))))
+```
+
+In this simple example, the process consumes the subscription notification and
+then proceeds to wait for delivery messages to arrive in its mailbox. When
+messages are received from the mailbox, the loop does something useful with
+the message and sends a receipt acknowledge back to the broker. If the
+subscription is cancelled, either by the consumer itself or some other
+process, a cancellation notification will be sent to the consumer process. In
+this scenario, the receive loop just exits. If the application does not wish
+to explicitly acknowledge message receipts, it should set the `no_ack` flag on
+the subscription request.
+
+To run the loop, spawn the function, subscribe the pid, and publish some
+messages:
+
+```cl
+lfe> (set consumer-pid (spawn (lambda () (loop chan))))
+<0.141.0>
+lfe> (kanin-chan:subscribe chan sub consumer-pid)
+#(basic.consume_ok #"amq.ctag-wGk8K-6_YH-ovKODkDZQKA")
+lfe> (kanin-chan:cast chan pub msg)
+ok
+Payload: #(amqp_msg
+           #(P_basic ...)
+           #"foobar")
+```
+
+To cancel a subscription, use the tag that the broker passed back with the
+`basic.consume_ok` acknowledgement:
+
+```cl
+lfe> (kanin-chan:call chan (make-basic.cancel consumer_tag tag))
+```
 
 
 ### Subscribing Internals [&#x219F;](#table-of-contents)
