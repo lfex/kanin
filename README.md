@@ -741,7 +741,29 @@ See the API documentation for details.
 
 ### Closing Channels and the Connection [&#x219F;](#table-of-contents)
 
-TBD
+When a channel is no longer required, a client should close it. This is
+achieved using `kanin-chan:close/1`:
+
+```cl
+lfe> (kanin-chan:close chan)
+ok
+```
+
+To close the connection, `kanin-conn:close/1` is used:
+
+```cl
+lfe> (kanin-conn:close conn)
+ok
+```
+
+Both the `channel.close` and `connection.close` commands take the arguments
+`reply_code` (an integer) and `reply_text` (binary text), which can be set by
+the client depending on the reason why the channel or connection is being
+closed. In general, however, the `reply_code` is set to 200 to indicate a
+normal shutdown. The `reply_text` attribute is just an arbitrary string, that
+the server may or may not log. If a client wants to set to a different reply
+code and/or text, it can use the overloaded functions `kanin-chan:close/3` and
+`kanin-conn:close/3` respectively.
 
 
 ### Complete Example [&#x219F;](#table-of-contents)
