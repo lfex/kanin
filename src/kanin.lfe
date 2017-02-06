@@ -70,3 +70,8 @@
 
 (defun del-chan (chan-key)
   'noop)
+
+;;; All
+
+(defun close ()
+  (gen_server:call 'kanin-server 'close))

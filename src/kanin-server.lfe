@@ -56,6 +56,15 @@
         (get-connections state)
         `(#(,conn-key ,conn))))))
 
+(defun close-connections (state)
+  'noop)
+
+(defun close-connection (state conn-key)
+  'noop)
+
+(defun delete-connections (state)
+  'noop)
+
 (defun delete-connection (state conn-key)
   'noop)
 
@@ -73,7 +82,25 @@
 (defun add-channel (state conn-key chan-key)
   'noop)
 
+(defun close-channels (state)
+  'noop)
+
+(defun close-channel (state chan-key)
+  'noop)
+
+(defun delete-channels (state)
+  'noop)
+
 (defun delete-channel (state chan-key)
+  'noop)
+
+;;; All
+
+(defun close-all (state)
+  ;; XXX close all connections
+  ;; XXX delete all connections
+  ;; XXX close all channels
+  ;; XXX delete all channels
   'noop)
 
 ;;; Initialization
@@ -144,8 +171,11 @@
   ((`#(chan ,key) _ state-data)
     `#(reply ,(get-channel state-data key) ,state-data))
   ;; Other
+  (('close _ state-data)
+    (let ((new-state (close-all state-data)))
+      `#(reply ok ,new-state)))
   (('stop _ state-data)
-    `#(stop shutdown ok state-data))
+    `#(stop shutdown ok (close-all state-data)))
   ((message _ state-data)
     `#(reply ,(unknown-command) ,state-data)))
 
