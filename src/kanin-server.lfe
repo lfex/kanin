@@ -43,13 +43,18 @@
   (server-state-conns state))
 
 (defun get-connection (state conn-key)
-  'noop)
+  (proplists:get_value conn-key (get-connections state)))
 
 (defun get-default-connection (state)
-  'noop)
+  (get-connection state 'default))
 
 (defun add-connection (state conn-key)
-  'noop)
+  (let ((`#(ok ,conn) (kanin-conn:start (get-opts state))))
+    (set-server-state-conns
+      state
+      (lists:merge
+        (get-connections state)
+        `(#(,conn-key ,conn))))))
 
 (defun delete-connection (state conn-key)
   'noop)
@@ -119,9 +124,18 @@
     `#(reply ,(get-uri state-data) ,state-data))
   (('opts _ state-data)
     `#(reply ,(get-opts state-data) ,state-data))
+  (('state _ state-data)
+    `#(reply ,state-data ,state-data))
   ;; Connections
+  (('conns _ state-data)
+    `#(reply ,(get-connections state-data) ,state-data))
   (('conn _ state-data)
     `#(reply ,(get-default-connection state-data) ,state-data))
+  ((`#(conn ,key) _ state-data)
+    `#(reply ,(get-connection state-data key) ,state-data))
+  ((`#(add-conn ,key) _ state-data)
+    (let ((new-state (add-connection state-data key)))
+      `#(reply ,(get-connection new-state key) ,new-state)))
   ;; Channels
   (('chans _ state-data)
     `#(reply ,(get-channels state-data) ,state-data))

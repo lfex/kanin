@@ -34,6 +34,9 @@
 (defun get-opts ()
   (gen_server:call 'kanin-server 'opts))
 
+(defun get-state ()
+  (gen_server:call 'kanin-server 'state))
+
 ;;; Connections
 
 (defun get-conns ()
@@ -45,10 +48,10 @@
 (defun get-conn (conn-key)
   (gen_server:call 'kanin-server `#(conn ,conn-key)))
 
-(defun add-conn (chan-key)
-  'noop)
+(defun add-conn (conn-key)
+  (gen_server:call 'kanin-server `#(add-conn ,conn-key)))
 
-(defun del-conn (chan-key)
+(defun del-conn (conn-key)
   'noop)
 
 ;;; Channels
