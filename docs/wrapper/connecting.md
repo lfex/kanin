@@ -1,10 +1,9 @@
 # kanin RabbitMQ Documentation
 
-## Wrapper Libraries
+## [Wrapper Libraries](index.md)
 
 ### Table of Contents
 
-* [Index](index.md)
 * [Connecting](#connecting-)
   * [Connecting to a Broker](#connecting-to-a-broker-)
   * [Connecting To A Broker with AMQP URIs](#connecting-to-a-broker-with-amqp-uris-)

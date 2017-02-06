@@ -1,11 +1,10 @@
 # kanin RabbitMQ Documentation
 
-## Wrapper Libraries
+## [Wrapper Libraries](index.md)
 
 ### Table of Contents
 
-* [Index](index.md)
-* [Getting Started*](#getting-started-)
+* [Getting Started](#getting-started-)
   * [The LFE AMQP Client Library](#the-lfe-amqp-client-library-)
   * [Programming Model](#programming-model-)
   * [AMQP Commands](#amqp-commands-)
