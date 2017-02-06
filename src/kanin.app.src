@@ -5,6 +5,7 @@
    [kanin,
     'kanin-chan',
     'kanin-conn',
+    'kanin-server',
     'kanin-uri',
     'kanin-util']},
   {registered, []},
