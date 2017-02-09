@@ -2,6 +2,9 @@
 
 ## [Wrapper Libraries](index.md)
 
+*Low-level kanin API for RabbitMQ/AMQP*
+
+
 ### Table of Contents
 
 * [Examples](#examples-)
@@ -16,7 +19,6 @@
 This shows a complete example:
 
 ```cl
-(include-lib "ltest/include/ltest-macros.lfe")
 (include-lib "kanin/include/amqp-client.lfe")
 
 (defun example ()

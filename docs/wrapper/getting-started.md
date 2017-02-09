@@ -2,6 +2,9 @@
 
 ## [Wrapper Libraries](index.md)
 
+*Low-level kanin API for RabbitMQ/AMQP*
+
+
 ### Table of Contents
 
 * [Getting Started](#getting-started-)
@@ -15,7 +18,7 @@
 
 #### The LFE AMQP Client Library [&#x219F;](#table-of-contents)
 
-The AMQP client provides an Erlang interface to compliant AMQP brokers. The
+The kanin AMQP client provides an LFE interface to compliant AMQP brokers. The
 client follows the AMQP execution model and implements the wire level
 marshaling required to encode and decode AMQP commands in a protocol
 conformant fashion. AMQP is a connection orientated protocol and multiplexes
@@ -81,15 +84,15 @@ API.
 
 #### AMQP Commands [&#x219F;](#table-of-contents)
 
-The general mechanism of interacting with the broker is to send and receive AMQP
-commands that are defined in the protocol documentation. During build process,
-the machine-readable version of the AMQP specification is used to auto-generate
-Erlang records for each command. The code generation process also defines
-sensible default values for each command. Using default values allows the
-programmer to write terser code - it is only necessary to override a field if
-you require non-default behaviour. The definition of each command can be
-consulted in the `include/rabbit-framing.lfe` header file. For example,
-when using the `(make-exchange.declare ...)` record-creating macro,
+The general mechanism of interacting with the broker is to send and receive
+AMQP commands that are defined in the protocol documentation. During build
+process, the machine-readable version of the AMQP specification is used to
+auto-generate Erlang records for each command. The code generation process
+also defines sensible default values for each command. Using default values
+allows the programmer to write terser code - it is only necessary to override
+a field if you require non-default behaviour. The definition of each command
+can be consulted in the `kanin/include/rabbit-framing.lfe` header file. For
+example, when using the `(make-exchange.declare ...)` record-creating macro,
 specifying the following:
 
 ```cl

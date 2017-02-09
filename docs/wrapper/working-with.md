@@ -2,6 +2,9 @@
 
 ## [Wrapper Libraries](index.md)
 
+*Low-level kanin API for RabbitMQ/AMQP*
+
+
 ### Table of Contents
 
 * [Working with Channels, Exchanges, Queues, and Messages](#)
@@ -267,7 +270,7 @@ lfe> (set (match-basic.consume_ok consumer_tag cnsm-tag)
 or
 
 ```cl
-(set sub (make-basic.consume queue #"my-queue"))
+lfe> (set sub (make-basic.consume queue #"my-queue"))
 #(basic.consume 0 #"my-queue" #"" false false false false ())
 lfe> (set (match-basic.consume_ok consumer_tag cnsm-tag)
           (kanin-chan:call chan sub))

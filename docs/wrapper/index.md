@@ -2,6 +2,9 @@
 
 ## Wrapper Libraries
 
+*Low-level kanin API for RabbitMQ/AMQP*
+
+
 ### Table of Contents
 
 * [Copyright Notice](#copyright-notice-)

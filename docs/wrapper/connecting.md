@@ -2,6 +2,9 @@
 
 ## [Wrapper Libraries](index.md)
 
+*Low-level kanin API for RabbitMQ/AMQP*
+
+
 ### Table of Contents
 
 * [Connecting](#connecting-)

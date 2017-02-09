@@ -2,6 +2,9 @@
 
 ## [Wrapper Libraries](index.md)
 
+*Low-level kanin API for RabbitMQ/AMQP*
+
+
 ### Table of Contents
 
 * [Flow Control](#flow-control-)
@@ -65,5 +68,5 @@ example of unrouteable message:
         ,content)
       ;; Do something with the returned message
       ...)))
-      (make-basic.return )))))
+      (make-basic.return)))))
 ```
