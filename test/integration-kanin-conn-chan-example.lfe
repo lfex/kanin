@@ -1,24 +1,32 @@
-(defmodule integration-kanin-example
+(defmodule integration-kanin-conn-chan-example
   (behaviour ltest-integration))
 
 (include-lib "ltest/include/ltest-macros.lfe")
 (include-lib "kanin/include/amqp-client.lfe")
 
 (deftest example
-  (kanin:start)
-  (let ((example-exchange #"example-exchange")
-        (example-queue #"example-queue")
-        (example-key #"example-key"))
+  (let* (;; Get connection options
+         (`#(ok ,opts) (kanin-uri:parse "amqp://localhost"))
+         ;; Start a network connection
+         (`#(ok ,conn) (kanin-conn:start opts))
+         ;; Open a channel on the connection
+         (`#(ok ,chan) (kanin-conn:open-channel conn))
+         (example-exchange #"example-exchange")
+         (example-queue #"example-queue")
+         (example-key #"example-key"))
     ;; Declare an exchange
-    (kanin:call
+    (kanin-chan:call
+      chan
       (make-exchange.declare
         exchange example-exchange))
     ;; Declare a queue
-    (kanin:call
+    (kanin-chan:call
+      chan
       (make-queue.declare
         queue example-queue))
     ;; Bind an exchange and queue with a routing key
-    (kanin:call
+    (kanin-chan:call
+      chan
       (make-queue.bind
         queue example-queue
         exchange example-exchange
@@ -28,15 +36,17 @@
           (pub (make-basic.publish
                  exchange example-exchange
                  routing_key example-key)))
-      (kanin:cast pub msg))
+      (kanin-chan:cast chan pub msg))
     ;; Get the message back from the queue
     (let* ((get-cmd (make-basic.get queue example-queue))
           (`#(,(match-basic.get_ok delivery_tag tag)
               ,(match-amqp_msg payload msg-payload))
-            (kanin:call get-cmd)))
+            (kanin-chan:call chan get-cmd)))
       ;; Do something with the message payload
       (is-equal #"foobar" msg-payload)
       ;; Ack the message
-      (kanin:cast (make-basic.ack delivery_tag tag))))
-  ;; Close the channel(s) and connection(s)
-  (kanin:close))
+      (kanin-chan:cast chan (make-basic.ack delivery_tag tag)))
+    ;; Close the channel
+    (kanin-chan:close chan)
+    ;; Close the connection
+    (kanin-conn:close conn)))
