@@ -8,13 +8,13 @@
     'kanin-server',
     'kanin-uri',
     'kanin-util']},
-  {registered, []},
+  {registered, [kanin]},
   {applications,
    [kernel,
     stdlib,
-    amqp_client,
-    rabbit_common
+    amqp_client
    ]},
+  {mod, {kanin, []}},
 
   {included_applications, []},
   {env, []},
