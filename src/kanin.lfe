@@ -33,8 +33,14 @@
 ;;;   Casts   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun cast-placeholder ()
-  (gen_server:cast 'kanin-server 'cast-placeholder))
+(defun cast (amqp-method)
+  (gen_server:cast 'kanin-server `#(cast ,amqp-method none default)))
+
+(defun cast (amqp-method content)
+  (gen_server:cast 'kanin-server `#(cast ,amqp-method ,content default)))
+
+(defun cast (amqp-method content chan-key)
+  (gen_server:cast 'kanin-server `#(cast ,amqp-method ,content ,chan-key)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Calls   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -82,7 +88,7 @@
 (defun add-chan (conn-key chan-key)
   (gen_server:call 'kanin-server `#(add-chan ,conn-key ,chan-key)))
 
-;;; Calls & Casts
+;;; Calls  &tc.
 
 (defun call (amqp-method)
   (gen_server:call 'kanin-server `#(call ,amqp-method none default)))
@@ -93,14 +99,15 @@
 (defun call (amqp-method content chan-key)
   (gen_server:call 'kanin-server `#(call ,amqp-method ,content ,chan-key)))
 
-(defun cast (amqp-method)
-  (gen_server:cast 'kanin-server `#(cast ,amqp-method none default)))
+(defun subscribe (amqp-method subscriber)
+  (gen_server:call
+    'kanin-server
+    `#(subscribe ,amqp-method ,subscriber default)))
 
-(defun cast (amqp-method content)
-  (gen_server:cast 'kanin-server `#(cast ,amqp-method ,content default)))
-
-(defun cast (amqp-method content chan-key)
-  (gen_server:cast 'kanin-server `#(cast ,amqp-method ,content ,chan-key)))
+(defun subscribe (amqp-method subscriber chan-key)
+  (gen_server:call
+    'kanin-server
+    `#(subscribe ,amqp-method ,subscriber ,chan-key)))
 
 ;;; All
 

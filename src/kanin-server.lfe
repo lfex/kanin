@@ -199,6 +199,12 @@
                     amqp-method
                     content)))
       `#(reply ,result ,state-data)))
+  ((`#(subscribe ,amqp-method ,subscriber ,chan-key) _ state-data)
+    (let ((result (kanin-chan:subscribe
+                    (get-channel state-data chan-key)
+                    amqp-method
+                    subscriber)))
+      `#(reply ,result ,state-data)))
   ;; Other
   (('close _ state-data)
     (let ((new-state (close-all state-data)))
