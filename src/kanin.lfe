@@ -48,13 +48,13 @@
 
 ;;; Configuration
 
-(defun get-uri ()
+(defun uri ()
   (gen_server:call 'kanin-server 'uri))
 
-(defun get-opts ()
+(defun opts ()
   (gen_server:call 'kanin-server 'opts))
 
-(defun get-state ()
+(defun state ()
   (gen_server:call 'kanin-server 'state))
 
 ;;; Connections
@@ -113,3 +113,10 @@
 
 (defun close ()
   (gen_server:call 'kanin-server 'close))
+
+(defun close (conn-or-chan)
+  "The `conn-or-chan` variable takes one of the following two forms:
+
+  * `#(conn ,key)` - closes the given connection
+  * `#(chan ,key)` - closes the given channel"
+  (gen_server:call 'kanin-server `#(close conn-or-chan)))
