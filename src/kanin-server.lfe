@@ -199,12 +199,26 @@
                     amqp-method
                     content)))
       `#(reply ,result ,state-data)))
-  ;; Other
+  ((`#(subscribe ,amqp-method ,subscriber ,chan-key) _ state-data)
+    (let ((result (kanin-chan:subscribe
+                    (get-channel state-data chan-key)
+                    amqp-method
+                    subscriber)))
+      `#(reply ,result ,state-data)))
+  ;; Close
   (('close _ state-data)
     (let ((new-state (close-all state-data)))
       `#(reply ok ,new-state)))
+  ((`#(close #(conn ,key)) _ state-data)
+    (let ((new-state (close-connection state-data key)))
+      `#(reply ok ,new-state)))
+  ((`#(close #(chan ,key)) _ state-data)
+    (let ((new-state (close-channel state-data key)))
+      `#(reply ok ,new-state)))
+  ;; Stop
   (('stop _ state-data)
     `#(stop shutdown ok (close-all state-data)))
+  ;; Other
   ((message _ state-data)
     `#(reply ,(unknown-command) ,state-data)))
 

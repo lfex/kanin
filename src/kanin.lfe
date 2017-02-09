@@ -33,8 +33,14 @@
 ;;;   Casts   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun cast-placeholder ()
-  (gen_server:cast 'kanin-server 'cast-placeholder))
+(defun cast (amqp-method)
+  (gen_server:cast 'kanin-server `#(cast ,amqp-method none default)))
+
+(defun cast (amqp-method content)
+  (gen_server:cast 'kanin-server `#(cast ,amqp-method ,content default)))
+
+(defun cast (amqp-method content chan-key)
+  (gen_server:cast 'kanin-server `#(cast ,amqp-method ,content ,chan-key)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Calls   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -42,13 +48,13 @@
 
 ;;; Configuration
 
-(defun get-uri ()
+(defun uri ()
   (gen_server:call 'kanin-server 'uri))
 
-(defun get-opts ()
+(defun opts ()
   (gen_server:call 'kanin-server 'opts))
 
-(defun get-state ()
+(defun state ()
   (gen_server:call 'kanin-server 'state))
 
 ;;; Connections
@@ -82,7 +88,7 @@
 (defun add-chan (conn-key chan-key)
   (gen_server:call 'kanin-server `#(add-chan ,conn-key ,chan-key)))
 
-;;; Calls & Casts
+;;; Calls  &tc.
 
 (defun call (amqp-method)
   (gen_server:call 'kanin-server `#(call ,amqp-method none default)))
@@ -93,16 +99,24 @@
 (defun call (amqp-method content chan-key)
   (gen_server:call 'kanin-server `#(call ,amqp-method ,content ,chan-key)))
 
-(defun cast (amqp-method)
-  (gen_server:cast 'kanin-server `#(cast ,amqp-method none default)))
+(defun subscribe (amqp-method subscriber)
+  (gen_server:call
+    'kanin-server
+    `#(subscribe ,amqp-method ,subscriber default)))
 
-(defun cast (amqp-method content)
-  (gen_server:cast 'kanin-server `#(cast ,amqp-method ,content default)))
-
-(defun cast (amqp-method content chan-key)
-  (gen_server:cast 'kanin-server `#(cast ,amqp-method ,content ,chan-key)))
+(defun subscribe (amqp-method subscriber chan-key)
+  (gen_server:call
+    'kanin-server
+    `#(subscribe ,amqp-method ,subscriber ,chan-key)))
 
 ;;; All
 
 (defun close ()
   (gen_server:call 'kanin-server 'close))
+
+(defun close (conn-or-chan)
+  "The `conn-or-chan` variable takes one of the following two forms:
+
+  * `#(conn ,key)` - closes the given connection
+  * `#(chan ,key)` - closes the given channel"
+  (gen_server:call 'kanin-server `#(close conn-or-chan)))
