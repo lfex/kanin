@@ -56,17 +56,21 @@
         (get-connections state)
         `(#(,conn-key ,conn))))))
 
-(defun close-connections (state)
-  'noop)
-
 (defun close-connection (state conn-key)
-  'noop)
+  (kanin-conn:close (get-connection state conn-key))
+  (set-server-state-conns
+    state
+    (lists:filter
+      (match-lambda ((`#(,key ,_))
+        (=/= key conn-key)))
+      (get-connections state))))
 
-(defun delete-connections (state)
-  'noop)
-
-(defun delete-connection (state conn-key)
-  'noop)
+(defun close-connections (state)
+  (lists:map
+    (match-lambda ((`#(,key ,_))
+      (close-connection state key)))
+    (get-connections state))
+  (set-server-state-conns state '()))
 
 ;;; Channels
 
@@ -74,34 +78,45 @@
   (server-state-chans state))
 
 (defun get-channel (state chan-key)
-  (proplists:get_value 'default (get-channels state)))
+  (proplists:get_value chan-key (get-channels state)))
 
 (defun get-default-channel (state)
   (get-channel state 'default))
 
-(defun add-channel (state conn-key chan-key)
-  'noop)
+(defun add-channel (state chan-key)
+  (add-channel state 'default chan-key))
 
-(defun close-channels (state)
-  'noop)
+(defun add-channel (state conn-key chan-key)
+  (let ((`#(ok ,chan) (kanin-conn:open-channel
+                        (get-connection state conn-key))))
+    (set-server-state-chans
+      state
+      (lists:merge
+        (get-channels state)
+        `(#(,chan-key ,chan))))))
 
 (defun close-channel (state chan-key)
-  'noop)
+  (kanin-chan:close (get-channel state chan-key))
+  (set-server-state-chans
+    state
+    (lists:filter
+      (match-lambda ((`#(,key ,_))
+        (=/= key chan-key)))
+      (get-channels state))))
 
-(defun delete-channels (state)
-  'noop)
-
-(defun delete-channel (state chan-key)
-  'noop)
+(defun close-channels (state)
+  (lists:map
+    (match-lambda ((`#(,key ,_))
+      (close-channel state key)))
+    (get-channels state))
+  (set-server-state-chans state '()))
 
 ;;; All
 
 (defun close-all (state)
-  ;; XXX close all connections
-  ;; XXX delete all connections
-  ;; XXX close all channels
-  ;; XXX delete all channels
-  'noop)
+  (close-connections
+    (close-channels state)))
+
 
 ;;; Initialization
 
@@ -142,7 +157,8 @@
   `#(ok ,initial-state))
 
 (defun handle_cast
-  (('cast-placeholder state-data)
+  ((`#(cast ,amqp-method ,content ,chan-key) state-data)
+    (kanin-chan:cast (get-channel state-data chan-key) amqp-method content)
     `#(noreply ,state-data)))
 
 (defun handle_call
@@ -170,6 +186,19 @@
     `#(reply ,(get-default-channel state-data) ,state-data))
   ((`#(chan ,key) _ state-data)
     `#(reply ,(get-channel state-data key) ,state-data))
+  ((`#(add-chan ,key) _ state-data)
+    (let ((new-state (add-channel state-data key)))
+      `#(reply ,(get-channel new-state key) ,new-state)))
+  ((`#(add-chan ,conn-key ,chan-key) _ state-data)
+    (let ((new-state (add-channel state-data conn-key chan-key)))
+      `#(reply ,(get-channel new-state chan-key) ,new-state)))
+  ;; Calls
+  ((`#(call ,amqp-method ,content ,chan-key) _ state-data)
+    (let ((result (kanin-chan:call
+                    (get-channel state-data chan-key)
+                    amqp-method
+                    content)))
+      `#(reply ,result ,state-data)))
   ;; Other
   (('close _ state-data)
     (let ((new-state (close-all state-data)))
